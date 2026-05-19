@@ -1,5 +1,6 @@
 import "./Header.css";
 import logo from "../icons/Logo_Montreal.png";
+import user from "../icons/user.png";
 
 export default function Header() {
   return (
@@ -10,7 +11,7 @@ export default function Header() {
       </div>
 
       <div className="header-right">
-        <img src="/icons/user.png" alt="Utilisateur" className="user-icon" />
+        <img src={user} alt="Utilisateur" className="user-icon" />
         <a href="#" className="compte">Mon compte</a>
       </div>
     </header>

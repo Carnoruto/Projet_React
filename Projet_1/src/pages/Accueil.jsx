@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { alertes } from "../services/alertes";
 import removeAccents from "../utils/removeAccents";
 import "./Accueil.css";
+import { Link } from "react-router-dom";
 
 export default function Accueil() {
   const [search, setSearch] = useState("");
@@ -38,6 +39,8 @@ export default function Accueil() {
 
   return (
     <div className="accueil-page">
+
+      {/* SECTION PRINCIPALE */}
       <div className="accueil-main">
         <h2 className="titre">Avis et alertes</h2>
         <p className="sous-titre">Trouver un avis</p>
@@ -102,25 +105,28 @@ export default function Accueil() {
           )}
         </div>
 
+        {/* Résultats */}
         <p className="result-count">{filtered.length} résultats</p>
 
         <div className="liste-alertes">
           {filtered.map(a => (
-            <div key={a.id} className="carte-alerte">
+            <Link to={`/alertes/${a.id}`} key={a.id} className="carte-alerte">
               <h3>{a.titre}</h3>
               <p className="categorie">{a.sujet}</p>
               <p className="date">{a.date}</p>
               <p className="arrondissement">{a.arrondissement}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
 
+      {/* SECTION ABONNEMENT — maintenant visible */}
       <aside className="abonnement">
         <h3>S’abonner aux alertes</h3>
         <p>Pour recevoir des avis et alertes par courriel ou texto, vous devez avoir créé un compte.</p>
-        <button className="btn-abonner">M’abonner →</button>
+        <Link to="/abonnement" className="btn-abonner">M’abonner →</Link>
       </aside>
+
     </div>
   );
 }
