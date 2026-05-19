@@ -1,0 +1,154 @@
+.accueil-page {
+  display: flex;
+  gap: 40px;
+  padding: 30px;
+  background-color: #fafafa;
+}
+
+.accueil-main {
+  flex: 3;
+}
+
+.titre {
+  font-size: 28px;
+  font-weight: 700;
+  color: #003366;
+}
+
+.sous-titre {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+/* Encadré rectangulaire */
+.encadre-recherche {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.label-recherche {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Barre de recherche + boutons */
+.recherche-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.barre-recherche {
+  flex: 1;
+  max-width: 500px;
+  padding: 10px 15px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+}
+
+.btn-rechercher {
+  background-color: #007a5e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-effacer {
+  background: none;
+  border: none;
+  color: #007a5e;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-rechercher:hover {
+  background-color: #00664f;
+}
+
+.btn-effacer:hover {
+  text-decoration: underline;
+}
+
+/* Filtres */
+.filtres {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.filtres select,
+.btn-date {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+  cursor: pointer;
+}
+
+.btn-date:hover {
+  background-color: #f0f0f0;
+}
+
+/* Calendrier */
+.calendar-popup {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 5px;
+  z-index: 10;
+}
+
+.calendar-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.btn-reset {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.btn-apply {
+  background-color: #0072ce;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+/* Liste des alertes */
+.liste-alertes {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.carte-alerte {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.abonnement {
+  flex: 1;
+  background: white;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  height: fit-content;
+}
