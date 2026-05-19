@@ -6,7 +6,7 @@ import removeAccents from "../utils/removeAccents";
 import "./Accueil.css";
 import { Link } from "react-router-dom";
 
-export default function Accueil() {
+function Accueil() {
   const [search, setSearch] = useState("");
   const [borough, setBorough] = useState("");
   const [subject, setSubject] = useState("");
@@ -130,3 +130,5 @@ export default function Accueil() {
     </div>
   );
 }
+
+export default Accueil;

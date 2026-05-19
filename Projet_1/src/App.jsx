@@ -3,7 +3,7 @@ import Footer from "./components/Footer";
 import AppRouter from "./router/AppRouter";
 import "./global.css";
 
-export default function App() {
+function App() {
   return (
     <>
       <Header />
@@ -12,3 +12,5 @@ export default function App() {
     </>
   );
 }
+
+export default App;

@@ -2,7 +2,7 @@ import "./Header.css";
 import logo from "../icons/Logo_Montreal.png";
 import user from "../icons/user.png";
 
-export default function Header() {
+function Header() {
   return (
     <header className="header">
       <div className="header-left">
@@ -17,3 +17,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default Header;

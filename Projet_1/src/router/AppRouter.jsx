@@ -5,7 +5,7 @@ import AlerteDetail from "../pages/AlerteDetail";
 import AbonnementIndisponible from "../pages/AbonnementIndisponible";
 
 
-export default function AppRouter() {
+function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
@@ -16,3 +16,5 @@ export default function AppRouter() {
     </BrowserRouter>
   );
 }
+
+export default AppRouter;

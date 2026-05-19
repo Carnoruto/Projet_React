@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { alertes } from "../services/alertes";
 import "./AlerteDetail.css";
 
-export default function AlerteDetail() {
+function AlerteDetail() {
   const { id } = useParams();
   const alerte = alertes.find(a => a.id === Number(id));
 
@@ -31,3 +31,5 @@ export default function AlerteDetail() {
     </div>
   );
 }
+
+export default AlerteDetail;

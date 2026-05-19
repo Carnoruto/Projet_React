@@ -1,7 +1,7 @@
 import "./AbonnementIndisponible.css";
 import { Link } from "react-router-dom";
 
-export default function AbonnementIndisponible() {
+function AbonnementIndisponible() {
   return (
     <div className="abonnement-indispo">
       <h2>Fonctionnalité non disponible</h2>
@@ -15,3 +15,5 @@ export default function AbonnementIndisponible() {
     </div>
   );
 }
+
+export default AbonnementIndisponible;
