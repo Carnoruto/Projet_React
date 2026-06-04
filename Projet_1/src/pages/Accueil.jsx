@@ -1,51 +1,84 @@
-import { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { alertes } from "../services/alertes";
-import removeAccents from "../utils/removeAccents";
-import "./Accueil.css";
+// src/pages/Accueil.jsx
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useAlertes } from "../hooks/useAlertes";
+import removeAccents from "../utils/removeAccents";
+import Squelette from "../components/Squelette";
+import BanniereHorsLigne from "../components/BanniereHorsLigne";
+import FiltresActifs from "../components/FiltresActifs";
+import FiltreDropdown from "../components/FiltreDropdown";
+import "./Accueil.css";
+
+const FILTRES_VIDES = {
+  recherche: "",
+  arrondissements: [],
+  sujets: [],
+  dateDebut: "",
+  dateFin: "",
+};
 
 function Accueil() {
-  const [search, setSearch] = useState("");
-  const [borough, setBorough] = useState("");
-  const [subject, setSubject] = useState("");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const { alertes, chargement, erreur, horsLigne, chargerPlus, aPlus } = useAlertes();
+  const [filtres, setFiltres] = useState(FILTRES_VIDES);
 
-  const boroughs = [...new Set(alertes.map(a => a.arrondissement))];
-  const subjects = [...new Set(alertes.map(a => a.sujet))];
+  // --- Valeurs disponibles (déduites des données réelles) ---
+const arrondissements = useMemo(
+  () => [...new Set(
+    alertes
+      .map((a) => a.arrondissement)
+      .filter((v) => v !== "Non spécifié")
+  )].sort(),
+  [alertes]
+);
 
-  const handleSearch = () => {
-    console.log("Recherche :", search, borough, subject, selectedDate);
+  const sujets = useMemo(
+    () => [...new Set(alertes.map((a) => a.sujet))].sort(),
+    [alertes]
+  );
+
+  // --- Filtrage ---
+  const alertesFiltrees = useMemo(() => {
+    return alertes.filter((a) => {
+      if (filtres.recherche) {
+        const q     = removeAccents(filtres.recherche.toLowerCase());
+        const titre = removeAccents(a.titre.toLowerCase());
+        const desc  = removeAccents(a.description.toLowerCase());
+        if (!titre.includes(q) && !desc.includes(q)) return false;
+      }
+      if (filtres.arrondissements.length > 0 &&
+          !filtres.arrondissements.includes(a.arrondissement)) return false;
+      if (filtres.sujets.length > 0 &&
+          !filtres.sujets.includes(a.sujet)) return false;
+      if (filtres.dateDebut && a.dateDebut < filtres.dateDebut) return false;
+      if (filtres.dateFin   && a.dateDebut > filtres.dateFin)   return false;
+      return true;
+    });
+  }, [alertes, filtres]);
+
+  // --- Helpers ---
+  const retirerChip = (type, valeur) => {
+    if (type === "dateDebut" || type === "dateFin") {
+      setFiltres((prev) => ({ ...prev, [type]: "" }));
+    } else {
+      setFiltres((prev) => ({
+        ...prev,
+        [type]: prev[type].filter((v) => v !== valeur),
+      }));
+    }
   };
 
-  const handleReset = () => {
-    setSearch("");
-    setBorough("");
-    setSubject("");
-    setSelectedDate(null);
-  };
+  const effacerTout = () => setFiltres(FILTRES_VIDES);
 
-  const filtered = alertes.filter(a => {
-    const matchSearch = removeAccents(a.titre.toLowerCase()).includes(removeAccents(search.toLowerCase()));
-    const matchBorough = borough ? a.arrondissement === borough : true;
-    const matchSubject = subject ? a.sujet === subject : true;
-    const matchDate = selectedDate
-      ? a.date === selectedDate.toISOString().split("T")[0]
-      : true;
-    return matchSearch && matchBorough && matchSubject && matchDate;
-  });
-
+  // --- Rendu ---
   return (
     <div className="accueil-page">
-
-      {/* SECTION PRINCIPALE */}
       <div className="accueil-main">
+
+        {horsLigne && <BanniereHorsLigne />}
+
         <h2 className="titre">Avis et alertes</h2>
         <p className="sous-titre">Trouver un avis</p>
 
-        {/* Encadré de recherche */}
         <div className="encadre-recherche">
           <p className="label-recherche">Rechercher par mot-clé</p>
 
@@ -53,80 +86,114 @@ function Accueil() {
             <input
               type="text"
               placeholder="Que cherchez-vous?"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={filtres.recherche}
+              onChange={(e) =>
+                setFiltres((prev) => ({ ...prev, recherche: e.target.value }))
+              }
               className="barre-recherche"
             />
-            <button className="btn-rechercher" onClick={handleSearch}>
-              Rechercher
-            </button>
-            <button className="btn-effacer" onClick={handleReset}>
+            <button className="btn-effacer" onClick={effacerTout}>
               Effacer
             </button>
           </div>
 
           {/* Filtres */}
           <div className="filtres">
-            <select value={borough} onChange={(e) => setBorough(e.target.value)}>
-              <option value="">Arrondissement</option>
-              {boroughs.map(b => <option key={b}>{b}</option>)}
-            </select>
 
-            <button
-              className="btn-date"
-              onClick={() => setShowCalendar(!showCalendar)}
-            >
-              {selectedDate ? selectedDate.toISOString().split("T")[0] : "Date"}
-            </button>
+            <FiltreDropdown
+  label="Arrondissement"
+  options={arrondissements}
+  valeurs={filtres.arrondissements}
+  onChange={(val) =>
+    setFiltres((prev) => ({ ...prev, arrondissements: val }))
+  }
+/>
 
-            <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-              <option value="">Sujet</option>
-              {subjects.map(s => <option key={s}>{s}</option>)}
-            </select>
+            <FiltreDropdown
+              label="Sujet"
+              options={sujets}
+              valeurs={filtres.sujets}
+              onChange={(val) =>
+                setFiltres((prev) => ({ ...prev, sujets: val }))
+              }
+            />
+
+            {/* Période */}
+            <div className="filtre-dates-champs">
+              <input
+                type="date"
+                value={filtres.dateDebut}
+                onChange={(e) =>
+                  setFiltres((prev) => ({ ...prev, dateDebut: e.target.value }))
+                }
+              />
+              <span>au</span>
+              <input
+                type="date"
+                value={filtres.dateFin}
+                onChange={(e) =>
+                  setFiltres((prev) => ({ ...prev, dateFin: e.target.value }))
+                }
+              />
+            </div>
+
           </div>
 
-          {/* Popup calendrier */}
-          {showCalendar && (
-            <div className="calendar-popup">
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                inline
-              />
-              <div className="calendar-buttons">
-                <button className="btn-reset" onClick={() => setSelectedDate(null)}>
-                  Réinitialiser
-                </button>
-                <button className="btn-apply" onClick={() => setShowCalendar(false)}>
-                  Appliquer
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Chips filtres actifs */}
+          <FiltresActifs
+            filtres={filtres}
+            onRetirer={retirerChip}
+            onEffacerTout={effacerTout}
+          />
         </div>
 
-        {/* Résultats */}
-        <p className="result-count">{filtered.length} résultats</p>
+        {/* Chargement / erreur */}
+        {chargement && alertes.length === 0 && <Squelette />}
+
+        {erreur && (
+          <div className="erreur-api">
+            ⚠️ Impossible de charger les alertes : {erreur}
+          </div>
+        )}
+
+        {!chargement && !erreur && (
+          <p className="result-count">{alertesFiltrees.length} résultats</p>
+        )}
 
         <div className="liste-alertes">
-          {filtered.map(a => (
+          {alertesFiltrees.map((a) => (
             <Link to={`/alertes/${a.id}`} key={a.id} className="carte-alerte">
               <h3>{a.titre}</h3>
               <p className="categorie">{a.sujet}</p>
-              <p className="date">{a.date}</p>
+              <p className="date">{a.dateDebut}</p>
               <p className="arrondissement">{a.arrondissement}</p>
             </Link>
           ))}
         </div>
+
+        {aPlus && !chargement && (
+          <button className="btn-charger-plus" onClick={chargerPlus}>
+            Charger plus
+          </button>
+        )}
+
+        {chargement && alertes.length > 0 && (
+          <div className="spinner" aria-label="Chargement..." />
+        )}
+
       </div>
 
-      {/* SECTION ABONNEMENT — maintenant visible */}
+      {/* Abonnement */}
       <aside className="abonnement">
-        <h3>S’abonner aux alertes</h3>
-        <p>Pour recevoir des avis et alertes par courriel ou texto, vous devez avoir créé un compte.</p>
-        <Link to="/abonnement" className="btn-abonner">M’abonner →</Link>
+        <h3>S'abonner aux alertes</h3>
+        <p>
+          Pour recevoir des avis et alertes par courriel ou texto, vous devez
+          avoir créé un compte.
+        </p>
+        <Link to="/abonnement" className="btn-abonner">
+          M'abonner →
+        </Link>
       </aside>
-
     </div>
   );
 }
