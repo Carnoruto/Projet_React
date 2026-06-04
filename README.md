@@ -68,8 +68,21 @@ Projet 2: Enrichissement de l'application et transformation en PWA
 
 Ce site est le même que le projet 1, sauf qu'a la place d'utiliser des alertes fictives, nous utilisons les vrais alertes grâce au dpnnées de l'API de la Ville de Montréal.
 
+2. Initialisation du projet
 
-3. Méthode utilisées
+Faire la même chose que le projet 1 pour le mode développement.
+
+Pour le mode production pour tester la PWA
+
+cd Projet_1
+npm run build
+npm run preview
+
+l'adresse sera "http://localhost:4173"
+
+On peut tester le mode hors-lighe quand il est en production
+
+4. Méthode utilisées
 
 Dans mon alertes.js, L'API retourne des champs qui ne correspondent pas directement au modèle interne
 de l'application. Une fonction "mapAlerte()" isolée convertit chaque enregistrement
@@ -92,7 +105,18 @@ Par exemple :
 
 4. Lighthouse
 
-Le score que j'ai obtenu dans le Lighthouse est le suivant :
+Le score que j'ai obtenu dans le Lighthouse est le suivant (désolé, je n'arrive pas à mettre une capture dans le readme) :
+
+Performance : 98
+
+Accessibility : 87
+
+Best Practices : 100
+
+SEO : 83
+
+
+
 
 
 
